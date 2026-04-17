@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { getPatients } from '../services/patientService';
 import { getResources } from '../services/resourceService';
-import { getAlerts } from '../services/alertService';
+import { getAlerts, clearAlerts } from '../services/alertService';
 import { getAIAnalysis } from '../services/aiService';
 import { getSocket, disconnectSocket } from '../socket/socket';
 
@@ -61,16 +61,34 @@ export function AppProvider({ children }) {
   const intervalRef = useRef(null);
 
   // ---------- Helpers to map backend → frontend field names ----------
-  const mapPatient = (p) => ({
-    ...p,
-    _id: p._id || p.patientId,
-    heart_rate: p.vitals?.heartRate ?? p.heart_rate,
-    oxygen_level: p.vitals?.oxygen ?? p.oxygen_level,
-    bp_systolic: p.vitals?.bpSystolic,
-    bp_diastolic: p.vitals?.bpDiastolic,
-    condition: p.status || p.condition || 'stable',
-    ward: p.ward,
-  });
+  const deriveCondition = (hr, spo2) => {
+    // Critical : HR > 110  OR  SpO2 < 90%
+    if (hr > 110 || spo2 < 90) return 'critical';
+    // Moderate : HR 100–110  OR  SpO2 90–94%
+    if (hr >= 100 || spo2 <= 94) return 'moderate';
+    // Stable   : HR 60–100  AND  SpO2 95–100%
+    return 'stable';
+  };
+
+  const mapPatient = (p) => {
+    const hr = p.vitals?.heartRate ?? p.heart_rate ?? 80;
+    const spo2 = p.vitals?.oxygen ?? p.oxygen_level ?? 98;
+    return {
+      ...p,
+      _id: p._id || p.patientId,
+      patient_id: p.patientId || p.patient_id,
+      heart_rate: hr,
+      oxygen_level: spo2,
+      bp_systolic: p.vitals?.bpSystolic ?? p.bp_systolic,
+      bp_diastolic: p.vitals?.bpDiastolic ?? p.bp_diastolic,
+      condition: deriveCondition(hr, spo2),
+      ward: p.ward,
+      bed: p.bed,
+      room_number: p.roomNumber || p.room_number,
+      floor: p.floor,
+      diagnosis: p.diagnosis,
+    };
+  };
 
   const mapResource = (r) => ({
     ...r,
@@ -180,6 +198,25 @@ export function AppProvider({ children }) {
     };
   }, [fetchAll]);
 
+  const handleManualRefresh = async () => {
+    try {
+      setLoading(true);
+      await clearAlerts();
+      setAlerts([]); // Optimistically clear frontend alerts
+    } catch (e) {
+      console.error('Failed to clear alerts:', e);
+    }
+    await fetchAll(false);
+  };
+
+  // ---------- Auto-refresh when alerts reach 300 ----------
+  useEffect(() => {
+    if (alerts.length >= 300) {
+      console.log(`[Auto-Clear] Alert count (${alerts.length}) reached limit. Clearing...`);
+      handleManualRefresh();
+    }
+  }, [alerts.length]);
+
   const value = {
     patients,
     resources,
@@ -188,7 +225,7 @@ export function AppProvider({ children }) {
     loading,
     errors,
     lastUpdated,
-    refresh: () => fetchAll(false),
+    refresh: handleManualRefresh,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -70,6 +70,9 @@ body {
   .badge-critical {
     @apply bg-red-50 text-red-600 border border-red-200;
   }
+  .badge-moderate {
+    @apply bg-amber-50 text-amber-600 border border-amber-200;
+  }
   .badge-warning,
   .badge-moderate {
     @apply bg-amber-50 text-amber-600 border border-amber-200;

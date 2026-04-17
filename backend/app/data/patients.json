@@ -6,6 +6,8 @@
     "gender": "Male",
     "ward": "General",
     "bed": "G-101",
+    "roomNumber": "GR-12",
+    "floor": "Ground Floor",
     "diagnosis": "Pneumonia",
     "vitals": { "heartRate": 82, "oxygen": 96, "bpSystolic": 130, "bpDiastolic": 85 },
     "status": "stable"
@@ -17,6 +19,8 @@
     "gender": "Female",
     "ward": "ICU",
     "bed": "ICU-01",
+    "roomNumber": "ICU-A1",
+    "floor": "1st Floor",
     "diagnosis": "Cardiac Arrest Recovery",
     "vitals": { "heartRate": 110, "oxygen": 91, "bpSystolic": 145, "bpDiastolic": 92 },
     "status": "critical"
@@ -28,6 +32,8 @@
     "gender": "Male",
     "ward": "General",
     "bed": "G-102",
+    "roomNumber": "GR-14",
+    "floor": "Ground Floor",
     "diagnosis": "Appendectomy Recovery",
     "vitals": { "heartRate": 76, "oxygen": 98, "bpSystolic": 120, "bpDiastolic": 80 },
     "status": "stable"
@@ -39,6 +45,8 @@
     "gender": "Female",
     "ward": "Maternity",
     "bed": "M-201",
+    "roomNumber": "MT-03",
+    "floor": "2nd Floor",
     "diagnosis": "Post-Delivery Observation",
     "vitals": { "heartRate": 88, "oxygen": 97, "bpSystolic": 118, "bpDiastolic": 76 },
     "status": "stable"
@@ -50,6 +58,8 @@
     "gender": "Male",
     "ward": "ICU",
     "bed": "ICU-02",
+    "roomNumber": "ICU-A2",
+    "floor": "1st Floor",
     "diagnosis": "Stroke",
     "vitals": { "heartRate": 125, "oxygen": 88, "bpSystolic": 160, "bpDiastolic": 100 },
     "status": "critical"
@@ -61,6 +71,8 @@
     "gender": "Female",
     "ward": "General",
     "bed": "G-103",
+    "roomNumber": "GR-16",
+    "floor": "Ground Floor",
     "diagnosis": "Diabetes Management",
     "vitals": { "heartRate": 78, "oxygen": 95, "bpSystolic": 135, "bpDiastolic": 88 },
     "status": "stable"
@@ -72,6 +84,8 @@
     "gender": "Male",
     "ward": "General",
     "bed": "G-104",
+    "roomNumber": "GR-18",
+    "floor": "Ground Floor",
     "diagnosis": "Fracture — Left Femur",
     "vitals": { "heartRate": 85, "oxygen": 97, "bpSystolic": 122, "bpDiastolic": 78 },
     "status": "stable"
@@ -83,6 +97,8 @@
     "gender": "Female",
     "ward": "ICU",
     "bed": "ICU-03",
+    "roomNumber": "ICU-B1",
+    "floor": "1st Floor",
     "diagnosis": "Sepsis",
     "vitals": { "heartRate": 130, "oxygen": 86, "bpSystolic": 90, "bpDiastolic": 55 },
     "status": "critical"
@@ -94,6 +110,8 @@
     "gender": "Male",
     "ward": "General",
     "bed": "G-105",
+    "roomNumber": "GR-20",
+    "floor": "Ground Floor",
     "diagnosis": "Chronic Bronchitis",
     "vitals": { "heartRate": 90, "oxygen": 93, "bpSystolic": 128, "bpDiastolic": 82 },
     "status": "moderate"
@@ -105,6 +123,8 @@
     "gender": "Female",
     "ward": "General",
     "bed": "G-106",
+    "roomNumber": "GR-22",
+    "floor": "Ground Floor",
     "diagnosis": "Kidney Stones",
     "vitals": { "heartRate": 92, "oxygen": 96, "bpSystolic": 125, "bpDiastolic": 80 },
     "status": "stable"
@@ -116,6 +136,8 @@
     "gender": "Male",
     "ward": "ICU",
     "bed": "ICU-04",
+    "roomNumber": "ICU-B2",
+    "floor": "1st Floor",
     "diagnosis": "Myocardial Infarction",
     "vitals": { "heartRate": 118, "oxygen": 89, "bpSystolic": 155, "bpDiastolic": 95 },
     "status": "critical"
@@ -127,6 +149,8 @@
     "gender": "Female",
     "ward": "General",
     "bed": "G-107",
+    "roomNumber": "1F-02",
+    "floor": "1st Floor",
     "diagnosis": "Dengue Fever",
     "vitals": { "heartRate": 105, "oxygen": 94, "bpSystolic": 110, "bpDiastolic": 70 },
     "status": "moderate"
@@ -138,6 +162,8 @@
     "gender": "Male",
     "ward": "General",
     "bed": "G-108",
+    "roomNumber": "1F-04",
+    "floor": "1st Floor",
     "diagnosis": "COPD Exacerbation",
     "vitals": { "heartRate": 95, "oxygen": 90, "bpSystolic": 140, "bpDiastolic": 88 },
     "status": "moderate"
@@ -149,6 +175,8 @@
     "gender": "Female",
     "ward": "Maternity",
     "bed": "M-202",
+    "roomNumber": "MT-05",
+    "floor": "2nd Floor",
     "diagnosis": "Pre-Eclampsia Monitoring",
     "vitals": { "heartRate": 98, "oxygen": 96, "bpSystolic": 150, "bpDiastolic": 95 },
     "status": "moderate"
@@ -160,6 +188,8 @@
     "gender": "Male",
     "ward": "General",
     "bed": "G-109",
+    "roomNumber": "1F-06",
+    "floor": "1st Floor",
     "diagnosis": "Liver Cirrhosis",
     "vitals": { "heartRate": 88, "oxygen": 94, "bpSystolic": 115, "bpDiastolic": 72 },
     "status": "moderate"
@@ -171,6 +201,8 @@
     "gender": "Female",
     "ward": "ICU",
     "bed": "ICU-05",
+    "roomNumber": "ICU-C1",
+    "floor": "1st Floor",
     "diagnosis": "Acute Respiratory Distress",
     "vitals": { "heartRate": 122, "oxygen": 84, "bpSystolic": 100, "bpDiastolic": 60 },
     "status": "critical"
@@ -182,6 +214,8 @@
     "gender": "Male",
     "ward": "General",
     "bed": "G-110",
+    "roomNumber": "1F-08",
+    "floor": "1st Floor",
     "diagnosis": "Road Accident — Multiple Abrasions",
     "vitals": { "heartRate": 100, "oxygen": 96, "bpSystolic": 118, "bpDiastolic": 75 },
     "status": "stable"
@@ -193,6 +227,8 @@
     "gender": "Female",
     "ward": "General",
     "bed": "G-111",
+    "roomNumber": "2F-01",
+    "floor": "2nd Floor",
     "diagnosis": "Hypertension Crisis",
     "vitals": { "heartRate": 108, "oxygen": 93, "bpSystolic": 180, "bpDiastolic": 110 },
     "status": "moderate"
@@ -204,6 +240,8 @@
     "gender": "Male",
     "ward": "General",
     "bed": "G-112",
+    "roomNumber": "2F-03",
+    "floor": "2nd Floor",
     "diagnosis": "Gastric Ulcer",
     "vitals": { "heartRate": 74, "oxygen": 97, "bpSystolic": 124, "bpDiastolic": 80 },
     "status": "stable"
@@ -215,6 +253,8 @@
     "gender": "Female",
     "ward": "ICU",
     "bed": "ICU-06",
+    "roomNumber": "ICU-C2",
+    "floor": "1st Floor",
     "diagnosis": "Post-Surgical Complications",
     "vitals": { "heartRate": 115, "oxygen": 87, "bpSystolic": 98, "bpDiastolic": 58 },
     "status": "critical"
@@ -226,6 +266,8 @@
     "gender": "Male",
     "ward": "General",
     "bed": "G-113",
+    "roomNumber": "2F-05",
+    "floor": "2nd Floor",
     "diagnosis": "Typhoid Fever",
     "vitals": { "heartRate": 102, "oxygen": 95, "bpSystolic": 116, "bpDiastolic": 74 },
     "status": "moderate"
@@ -237,6 +279,8 @@
     "gender": "Female",
     "ward": "General",
     "bed": "G-114",
+    "roomNumber": "2F-07",
+    "floor": "2nd Floor",
     "diagnosis": "Osteoporosis — Hip Fracture",
     "vitals": { "heartRate": 80, "oxygen": 95, "bpSystolic": 132, "bpDiastolic": 84 },
     "status": "stable"

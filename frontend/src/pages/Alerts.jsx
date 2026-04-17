@@ -2,10 +2,12 @@ import { useState, useMemo } from 'react';
 import { Bell, Filter } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import AlertBox from '../components/AlertBox';
+import PatientDetailModal from '../components/PatientDetailModal';
 
 export default function Alerts() {
-  const { alerts, loading } = useAppContext();
+  const { alerts, patients, loading } = useAppContext();
   const [filter, setFilter] = useState('all');
+  const [selectedPatient, setSelectedPatient] = useState(null);
 
   const filtered = useMemo(() => {
     if (filter === 'all') return alerts;
@@ -13,6 +15,22 @@ export default function Alerts() {
       (a) => (a.severity || '').toLowerCase() === filter || false
     );
   }, [alerts, filter]);
+
+  // Find the matching patient for a given alert
+  const findPatientForAlert = (alert) => {
+    const pid = alert.patientId || alert.patient_id;
+    if (!pid) return null;
+    return patients.find(
+      (p) => p.patientId === pid || p.patient_id === pid || p._id === pid
+    ) || null;
+  };
+
+  const handleAlertClick = (alert) => {
+    const patient = findPatientForAlert(alert);
+    if (patient) {
+      setSelectedPatient(patient);
+    }
+  };
 
   if (loading) {
     return (
@@ -88,13 +106,30 @@ export default function Alerts() {
             <p className="text-slate-400 text-sm">No alerts to display.</p>
           </div>
         ) : (
-          filtered.map((a, i) => (
-            <div key={a._id || i} className="animate-fade-in" style={{ animationDelay: `${i * 40}ms` }}>
-              <AlertBox alert={a} />
-            </div>
-          ))
+          filtered.map((a, i) => {
+            const hasPatient = !!(a.patientId || a.patient_id);
+            return (
+              <div
+                key={a._id || i}
+                className={`animate-fade-in ${hasPatient ? 'cursor-pointer' : ''}`}
+                style={{ animationDelay: `${i * 40}ms` }}
+                onClick={() => hasPatient && handleAlertClick(a)}
+                title={hasPatient ? 'Click to view patient details' : ''}
+              >
+                <AlertBox alert={a} clickable={hasPatient} />
+              </div>
+            );
+          })
         )}
       </div>
+
+      {/* Patient detail modal */}
+      {selectedPatient && (
+        <PatientDetailModal
+          patient={selectedPatient}
+          onClose={() => setSelectedPatient(null)}
+        />
+      )}
     </div>
   );
 }

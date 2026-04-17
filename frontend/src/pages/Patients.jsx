@@ -36,6 +36,8 @@ export default function Patients() {
   const filterButtons = [
     { key: 'all', label: 'All' },
     { key: 'critical', label: 'Critical' },
+    { key: 'moderate', label: 'Moderate' },
+    { key: 'stable', label: 'Stable' },
     { key: 'warning', label: 'Moderate' },
     { key: 'normal', label: 'Stable' },
   ];

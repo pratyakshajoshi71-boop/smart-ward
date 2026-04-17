@@ -1,7 +1,7 @@
-import { AlertTriangle, CheckCircle, AlertCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle, AlertCircle, ChevronRight } from 'lucide-react';
 import { alertBgColor, alertTextColor, alertDotColor, timeAgo } from '../utils/helpers';
 
-export default function AlertBox({ alert }) {
+export default function AlertBox({ alert, clickable = false }) {
   const {
     message = 'Unknown alert',
     severity = 'normal',
@@ -17,7 +17,7 @@ export default function AlertBox({ alert }) {
 
   return (
     <div
-      className={`flex items-start gap-3 px-4 py-3.5 rounded-xl border transition-all duration-300 hover:scale-[1.01] ${alertBgColor(severity)}`}
+      className={`flex items-start gap-3 px-4 py-3.5 rounded-xl border transition-all duration-300 hover:scale-[1.01] ${alertBgColor(severity)} ${clickable ? 'hover:ring-2 hover:ring-emerald-400/30' : ''}`}
     >
       {/* Dot / Icon */}
       <div className="pt-0.5">
@@ -29,9 +29,16 @@ export default function AlertBox({ alert }) {
         <p className={`text-sm font-medium leading-snug ${alertTextColor(severity)}`}>
           {message}
         </p>
-        {timestamp && (
-          <p className="text-[10px] text-slate-400 mt-1">{timeAgo(timestamp)}</p>
-        )}
+        <div className="flex items-center gap-2 mt-1">
+          {timestamp && (
+            <p className="text-[10px] text-slate-400">{timeAgo(timestamp)}</p>
+          )}
+          {clickable && (
+            <span className="text-[10px] text-emerald-500/70 flex items-center gap-0.5">
+              View patient <ChevronRight className="w-2.5 h-2.5" />
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Live dot for critical */}

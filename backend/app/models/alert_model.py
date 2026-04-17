@@ -38,3 +38,8 @@ def upsert_alert(alert: dict):
         {"$set": alert},
         upsert=True,
     )
+
+
+def clear_all_alerts():
+    """Delete all alerts from the collection."""
+    alerts_collection.delete_many({})

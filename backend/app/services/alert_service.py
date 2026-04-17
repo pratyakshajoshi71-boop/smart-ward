@@ -99,3 +99,14 @@ def save_alerts(alerts: list):
             insert_alert(alert)
         except Exception as e:
             print(f"[AlertService] Error saving alert {alert.get('alertId')}: {e}")
+
+
+def clear_all_alerts() -> int:
+    """Clear all alerts and return the count of deleted alerts."""
+    from app.models.alert_model import alerts_collection
+    try:
+        result = alerts_collection.delete_many({})
+        return result.deleted_count
+    except Exception as e:
+        print(f"[AlertService] Error clearing alerts: {e}")
+        return 0

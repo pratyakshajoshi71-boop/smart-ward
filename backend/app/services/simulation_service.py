@@ -34,10 +34,13 @@ async def _simulate_tick():
 
             update_patient_vitals(patient["patientId"], new_vitals)
 
-            # Derive status from vitals
-            if new_vitals["oxygen"] < 90 or new_vitals["heartRate"] > 130:
+            # Derive status from vitals (user-defined benchmarks)
+            # Critical : HR > 110  OR  SpO2 < 90%
+            # Moderate : HR 100–110  OR  SpO2 90–94%
+            # Stable   : HR 60–100  AND  SpO2 95–100%
+            if new_vitals["heartRate"] > 110 or new_vitals["oxygen"] < 90:
                 new_status = "critical"
-            elif new_vitals["oxygen"] < 94 or new_vitals["heartRate"] > 110:
+            elif new_vitals["heartRate"] >= 100 or new_vitals["oxygen"] <= 94:
                 new_status = "moderate"
             else:
                 new_status = "stable"

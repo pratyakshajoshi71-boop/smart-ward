@@ -18,3 +18,10 @@ def list_alerts():
 def list_active_alerts():
     """GET /alerts/active — get unresolved alerts only."""
     return get_active_alerts()
+
+
+@router.delete("")
+def delete_all_alerts():
+    """DELETE /alerts — clear all alerts."""
+    from app.controllers.alert_controller import clear_alerts
+    return clear_alerts()

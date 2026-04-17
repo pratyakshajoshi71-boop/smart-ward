@@ -81,7 +81,7 @@ export default function Dashboard() {
           <h1 className="text-2xl font-extrabold text-emerald-900 tracking-tight">Clinical Insights</h1>
           <p className="text-sm text-slate-500 mt-0.5">Real-time hospital overview</p>
         </div>
-        <div className="hidden sm:flex items-center gap-2 stat-chip badge-normal">
+        <div className="hidden sm:flex items-center gap-2 stat-chip badge-stable">
           <Activity className="w-3 h-3" />
           <span>Live</span>
         </div>

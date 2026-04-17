@@ -12,13 +12,13 @@ export default function PatientCard({ patient }) {
   } = patient;
 
   const isCritical = (condition || '').toLowerCase() === 'critical';
-  const isWarning = (condition || '').toLowerCase() === 'warning';
+  const isModerate = (condition || '').toLowerCase() === 'moderate';
 
   return (
     <div
       className={`glass-card-hover p-5 relative overflow-hidden
         ${isCritical ? 'border-red-300/60' : ''}
-        ${isWarning ? 'border-amber-300/60' : ''}
+        ${isModerate ? 'border-amber-300/60' : ''}
       `}
     >
       {/* Glow accent for critical */}
@@ -32,7 +32,7 @@ export default function PatientCard({ patient }) {
           {/* Avatar */}
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold
-              ${isCritical ? 'bg-red-100 text-red-600' : isWarning ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-700'}`}
+              ${isCritical ? 'bg-red-100 text-red-600' : isModerate ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-700'}`}
           >
             {name.charAt(0)}
           </div>
@@ -49,13 +49,13 @@ export default function PatientCard({ patient }) {
           className={`stat-chip ${
             isCritical
               ? 'badge-critical'
-              : isWarning
-              ? 'badge-warning'
-              : 'badge-normal'
+              : isModerate
+              ? 'badge-moderate'
+              : 'badge-stable'
           }`}
         >
           {isCritical && <AlertTriangle className="w-3 h-3" />}
-          {condition}
+          {condition.charAt(0).toUpperCase() + condition.slice(1)}
         </span>
       </div>
 
