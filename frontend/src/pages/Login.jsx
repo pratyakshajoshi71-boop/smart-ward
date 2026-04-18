@@ -40,6 +40,13 @@ export default function Login() {
       }
     }
 
+    if (role === 'Patient') {
+      if (email !== 'arjun@gmail.com' || password !== '123456') {
+        setError('Invalid patient credentials. Only Arjun Mehta has access to the portal currently.');
+        return;
+      }
+    }
+
     try {
       login(email, password, role);
       const dest = location.state?.from?.pathname || defaultPaths[role] || '/admin';

@@ -15,5 +15,7 @@
   "orInUse": 3,
   "wheelchairs": 25,
   "wheelchairsInUse": 12,
+  "doctors_on_duty": 5,
+  "nurses_on_duty": 15,
   "lastUpdated": "2026-04-17T08:00:00Z"
 }

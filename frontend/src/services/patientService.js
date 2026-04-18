@@ -20,3 +20,21 @@ export const uploadReport = async (patientId, reportName, fileData) => {
   });
   return response.data;
 };
+
+/**
+ * Book an appointment for a patient.
+ * POST /patients/{patientId}/appointments
+ */
+export const bookAppointment = async (patientId, appointmentData) => {
+  const response = await API.post(`/patients/${patientId}/appointments`, appointmentData);
+  return response.data;
+};
+
+/**
+ * Fetch all appointments for a patient.
+ * GET /patients/{patientId}/appointments
+ */
+export const getAppointments = async (patientId) => {
+  const response = await API.get(`/patients/${patientId}/appointments`);
+  return response.data;
+};

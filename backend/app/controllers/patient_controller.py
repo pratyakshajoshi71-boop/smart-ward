@@ -43,3 +43,36 @@ def upload_report(patient_id: str, payload: dict):
     add_patient_report(patient_id, report)
     
     return format_response(True, {"report": report}, f"Report {report_name} uploaded successfully")
+
+
+def book_appointment(patient_id: str, payload: dict):
+    """Handle booking an appointment for a patient."""
+    from app.models.patient_model import add_patient_appointment
+
+    doctor = payload.get("doctor")
+    date = payload.get("date")
+    time = payload.get("time")
+    appt_type = payload.get("type", "General Checkup")
+
+    if not doctor or not date or not time:
+        return format_response(False, None, "doctor, date, and time are required")
+
+    appointment = {
+        "doctor": doctor,
+        "date": date,
+        "time": time,
+        "type": appt_type,
+        "status": "upcoming",
+    }
+
+    add_patient_appointment(patient_id, appointment)
+
+    return format_response(True, {"appointment": appointment}, "Appointment booked successfully")
+
+
+def list_appointments(patient_id: str):
+    """Return all appointments for a patient."""
+    from app.models.patient_model import get_patient_appointments
+
+    appointments = get_patient_appointments(patient_id)
+    return format_response(True, appointments, f"Fetched {len(appointments)} appointments")

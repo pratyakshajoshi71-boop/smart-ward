@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useAppContext } from '../context/AppContext';
 import { Calendar, FileText, User as UserIcon, LogOut, Clock, Activity, Eye, Download, Pill, Sparkles, X } from 'lucide-react';
@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { mockPatients } from '../data/mockStaffData';
 import PatientSidebar from '../components/patient/PatientSidebar';
 import { analyzeReport } from '../services/aiService';
+import { bookAppointment as bookAppointmentAPI, getAppointments } from '../services/patientService';
 import ReactMarkdown from 'react-markdown';
 
 export default function PatientDashboard() {
@@ -25,21 +26,34 @@ export default function PatientDashboard() {
   const patientData = mockPatients.find(p => p.id === user?.id);
   const livePatient = livePatients.find(p => p.patient_id === user?.id || p._id === user?.id);
   
+  // Load appointments from the database on mount
+  useEffect(() => {
+    if (user?.id) {
+      getAppointments(user.id)
+        .then(res => {
+          if (res.success && Array.isArray(res.data)) {
+            setBookedAppointments(res.data);
+          }
+        })
+        .catch(err => console.error('Failed to load appointments:', err));
+    }
+  }, [user?.id]);
+  
   const baseAppointments = patientData?.appointments || [];
   const allAppointments = [...bookedAppointments, ...baseAppointments];
   
   const reports = patientData?.reports || [];
   const prescriptions = patientData?.prescriptions || [];
 
-  const handleBookAppointment = (e) => {
+  const handleBookAppointment = async (e) => {
     e.preventDefault();
-    setBookedAppointments([
-      {
-        ...bookingForm,
-        status: 'upcoming'
-      },
-      ...bookedAppointments
-    ]);
+    const newAppointment = { ...bookingForm, status: 'upcoming' };
+    try {
+      await bookAppointmentAPI(user.id, newAppointment);
+      setBookedAppointments([newAppointment, ...bookedAppointments]);
+    } catch (err) {
+      console.error('Failed to book appointment:', err);
+    }
     setIsBookingModalOpen(false);
     setBookingForm({ doctor: 'Dr. Sarah Smith', date: '', time: '10:00 AM', type: 'General Checkup' });
   };
@@ -363,6 +377,7 @@ export default function PatientDashboard() {
                   <option value="Dr. Michael Chen">Dr. Michael Chen (Neurology)</option>
                   <option value="Dr. Emily Davis">Dr. Emily Davis (General Practice)</option>
                   <option value="Dr. James Wilson">Dr. James Wilson (Orthopedics)</option>
+                  <option value="Dr. Priya Kapoor">Dr. Priya Kapoor (Dermatology)</option>
                 </select>
               </div>
 
@@ -372,6 +387,7 @@ export default function PatientDashboard() {
                   <input 
                     type="date" 
                     required
+                    min={new Date().toISOString().split('T')[0]}
                     value={bookingForm.date}
                     onChange={(e) => setBookingForm({...bookingForm, date: e.target.value})}
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-slate-700"

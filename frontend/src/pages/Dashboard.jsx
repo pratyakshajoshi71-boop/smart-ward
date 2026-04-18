@@ -29,14 +29,14 @@ function StatCard({ icon: Icon, label, value, sub, accent = 'teal' }) {
       {/* Decorative Circles */}
       <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full group-hover:scale-110 transition-transform duration-500 pointer-events-none" />
       <div className="absolute right-8 -bottom-8 w-24 h-24 bg-white/5 rounded-full pointer-events-none" />
-      
+
       {/* Icon Area */}
       <div className="flex justify-between items-start mb-4 relative z-10">
         <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm shadow-sm">
           <Icon className="w-5 h-5 text-white" strokeWidth={2.5} />
         </div>
       </div>
-      
+
       {/* Content Area */}
       <div className="relative z-10 flex flex-col">
         <p className="text-3xl font-extrabold tracking-tight mb-1">{value}</p>
@@ -100,10 +100,10 @@ export default function Dashboard() {
             </span>
             SYSTEM LIVE
           </div>
-        <div className="hidden sm:flex items-center gap-2 stat-chip badge-stable">
-          <Activity className="w-3 h-3" />
-          <span>Live</span>
-        </div>
+          <div className="hidden sm:flex items-center gap-2 stat-chip badge-stable">
+            <Activity className="w-3 h-3" />
+            <span>Live</span>
+          </div>
         </div>
       </div>
 
@@ -120,7 +120,7 @@ export default function Dashboard() {
 
       {/* ── Main grid: Asymmetrical layout ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
-        
+
         {/* Col 1 — Critical Patients (Wider column for list) */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 lg:col-span-5">
           <div className="flex items-center justify-between mb-5">
@@ -171,7 +171,7 @@ export default function Dashboard() {
 
         {/* Col 3 — Alerts + AI (Narrow column) */}
         <div className="flex flex-col gap-6 lg:col-span-3">
-          
+
           {/* Alerts */}
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
             <div className="flex items-center gap-2 mb-4">
@@ -207,7 +207,7 @@ export default function Dashboard() {
               )}
             </div>
           </div>
-          
+
         </div>
       </div>
     </div>

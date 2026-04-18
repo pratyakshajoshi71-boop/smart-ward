@@ -31,10 +31,10 @@ export const mockPatients = [
       { date: '2024-06-15', event: 'Annual Health Checkup', type: 'visit' },
     ],
     prescriptions: [
-      { name: 'Aspirin', dosage: '75mg', duration: 'Lifelong', frequency: 'Once daily' },
-      { name: 'Clopidogrel', dosage: '75mg', duration: '12 months', frequency: 'Once daily' },
-      { name: 'Atorvastatin', dosage: '40mg', duration: 'Lifelong', frequency: 'At bedtime' },
-      { name: 'Metoprolol', dosage: '25mg', duration: '6 months', frequency: 'Twice daily' },
+      { name: 'Aspirin', dosage: '75mg', duration: '30 days', frequency: 'Once daily' },
+      { name: 'Clopidogrel', dosage: '75mg', duration: '14 days', frequency: 'Once daily' },
+      { name: 'Atorvastatin', dosage: '40mg', duration: '30 days', frequency: 'At bedtime' },
+      { name: 'Metoprolol', dosage: '25mg', duration: '7 days', frequency: 'Twice daily' },
     ],
     reports: [
       { name: 'ECG Report', date: '2026-04-14', type: 'Cardiology' },

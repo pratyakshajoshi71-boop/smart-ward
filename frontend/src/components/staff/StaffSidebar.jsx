@@ -16,8 +16,6 @@ import { useAuth } from '../../context/AuthContext';
 const links = [
   { to: '/staff/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/staff/patients', label: 'Assigned Patients', icon: Users },
-  { to: '#', label: 'Appointments', icon: Calendar },
-  { to: '#', label: 'Reports', icon: FileText },
   { to: '#', label: 'Notifications', icon: Bell },
 ];
 

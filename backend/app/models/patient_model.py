@@ -48,3 +48,20 @@ def add_patient_report(patient_id: str, report: dict):
         {"patientId": patient_id},
         {"$push": {"reports": report}},
     )
+
+
+def add_patient_appointment(patient_id: str, appointment: dict):
+    """Add an appointment object to the patient's appointments array."""
+    patients_collection.update_one(
+        {"patientId": patient_id},
+        {"$push": {"appointments": appointment}},
+        upsert=True,
+    )
+
+
+def get_patient_appointments(patient_id: str) -> list:
+    """Retrieve all appointments for a patient."""
+    doc = patients_collection.find_one({"patientId": patient_id}, {"appointments": 1})
+    if doc:
+        return doc.get("appointments", [])
+    return []
