@@ -5,7 +5,7 @@ import axios from 'axios';
  * Change the baseURL to point at your FastAPI backend.
  */
 const API = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'https://smart-ward.onrender.com',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

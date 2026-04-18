@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = 'http://localhost:8000';
+const SOCKET_URL = 'https://smart-ward.onrender.com';
 
 let socket = null;
 
