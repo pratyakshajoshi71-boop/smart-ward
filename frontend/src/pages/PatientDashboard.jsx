@@ -17,12 +17,31 @@ export default function PatientDashboard() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
 
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [bookedAppointments, setBookedAppointments] = useState([]);
+  const [bookingForm, setBookingForm] = useState({ doctor: 'Dr. Sarah Smith', date: '', time: '10:00 AM', type: 'General Checkup' });
+
   const patientData = mockPatients.find(p => p.id === user?.id);
   const livePatient = livePatients.find(p => p.patient_id === user?.id || p._id === user?.id);
   
-  const appointments = patientData?.appointments || [];
+  const baseAppointments = patientData?.appointments || [];
+  const allAppointments = [...bookedAppointments, ...baseAppointments];
+  
   const reports = patientData?.reports || [];
   const prescriptions = patientData?.prescriptions || [];
+
+  const handleBookAppointment = (e) => {
+    e.preventDefault();
+    setBookedAppointments([
+      {
+        ...bookingForm,
+        status: 'upcoming'
+      },
+      ...bookedAppointments
+    ]);
+    setIsBookingModalOpen(false);
+    setBookingForm({ doctor: 'Dr. Sarah Smith', date: '', time: '10:00 AM', type: 'General Checkup' });
+  };
 
   const handleViewReport = (base64Data) => {
     fetch(base64Data)
@@ -96,24 +115,29 @@ export default function PatientDashboard() {
             <span className="font-medium text-slate-800 text-right">{patientData?.address}</span>
           </div>
         </div>
-        <button className="mt-6 w-full py-2.5 bg-emerald-50 text-emerald-700 font-semibold rounded-xl hover:bg-emerald-100 transition-colors border border-emerald-200">
-          Edit Profile
-        </button>
       </div>
     </div>
   );
 
   const renderAppointments = () => (
     <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-          <Calendar className="w-6 h-6 text-emerald-600" />
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+            <Calendar className="w-6 h-6 text-emerald-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-emerald-900">Your Appointments</h2>
         </div>
-        <h2 className="text-2xl font-bold text-emerald-900">Your Appointments</h2>
+        <button 
+          onClick={() => setIsBookingModalOpen(true)}
+          className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition-colors shadow-sm"
+        >
+          Book Appointment
+        </button>
       </div>
       
       <div className="space-y-4">
-        {appointments.map((apt, idx) => {
+        {allAppointments.map((apt, idx) => {
           const isUpcoming = apt.status === 'upcoming';
           return (
             <div key={idx} className={`glass-card p-5 flex items-center justify-between ${isUpcoming ? 'border-l-4 border-l-emerald-500' : ''}`}>
@@ -234,7 +258,7 @@ export default function PatientDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-teal-200 via-emerald-200 to-teal-300 text-slate-800">
       <PatientSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
       {/* Main Content Area */}
@@ -303,6 +327,107 @@ export default function PatientDashboard() {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---------- Appointment Booking Modal ---------- */}
+      {isBookingModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-0">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsBookingModalOpen(false)}></div>
+          
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col animate-scale-up">
+            <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-slate-50/50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-emerald-600" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-800">Book Appointment</h3>
+              </div>
+              <button 
+                onClick={() => setIsBookingModalOpen(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleBookAppointment} className="p-6 space-y-5">
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-700">Select Doctor</label>
+                <select 
+                  required
+                  value={bookingForm.doctor}
+                  onChange={(e) => setBookingForm({...bookingForm, doctor: e.target.value})}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-slate-700"
+                >
+                  <option value="Dr. Sarah Smith">Dr. Sarah Smith (Cardiology)</option>
+                  <option value="Dr. Michael Chen">Dr. Michael Chen (Neurology)</option>
+                  <option value="Dr. Emily Davis">Dr. Emily Davis (General Practice)</option>
+                  <option value="Dr. James Wilson">Dr. James Wilson (Orthopedics)</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-slate-700">Date</label>
+                  <input 
+                    type="date" 
+                    required
+                    value={bookingForm.date}
+                    onChange={(e) => setBookingForm({...bookingForm, date: e.target.value})}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-slate-700"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-sm font-semibold text-slate-700">Time</label>
+                  <select 
+                    required
+                    value={bookingForm.time}
+                    onChange={(e) => setBookingForm({...bookingForm, time: e.target.value})}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-slate-700"
+                  >
+                    <option value="09:00 AM">09:00 AM</option>
+                    <option value="10:00 AM">10:00 AM</option>
+                    <option value="11:30 AM">11:30 AM</option>
+                    <option value="02:00 PM">02:00 PM</option>
+                    <option value="03:30 PM">03:30 PM</option>
+                    <option value="04:45 PM">04:45 PM</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-semibold text-slate-700">Consultation Type</label>
+                <select 
+                  required
+                  value={bookingForm.type}
+                  onChange={(e) => setBookingForm({...bookingForm, type: e.target.value})}
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all text-slate-700"
+                >
+                  <option value="General Checkup">General Checkup</option>
+                  <option value="Follow-up Visit">Follow-up Visit</option>
+                  <option value="Routine Blood Test">Routine Blood Test</option>
+                  <option value="Specialist Consultation">Specialist Consultation</option>
+                </select>
+              </div>
+
+              <div className="pt-4 mt-2 border-t border-slate-100 flex justify-end gap-3">
+                <button 
+                  type="button"
+                  onClick={() => setIsBookingModalOpen(false)}
+                  className="px-5 py-2.5 text-slate-600 font-medium hover:bg-slate-100 rounded-xl transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl transition-colors shadow-sm"
+                >
+                  Confirm Booking
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

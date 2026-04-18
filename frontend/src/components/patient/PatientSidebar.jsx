@@ -13,7 +13,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 
 const links = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'dashboard', label: 'Admission Card', icon: LayoutDashboard },
   { id: 'appointments', label: 'Appointments', icon: Calendar },
   { id: 'reports', label: 'Reports', icon: FileText },
   { id: 'medications', label: 'Medications', icon: Pill },

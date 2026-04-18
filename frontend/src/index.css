@@ -157,34 +157,67 @@ body {
 
 /* ---------- Login Animations ---------- */
 @keyframes sweep {
-  0% { clip-path: inset(0 100% 0 0); }
-  50% { clip-path: inset(0 0 0 0); }
-  100% { clip-path: inset(0 0 0 100%); }
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  50% {
+    clip-path: inset(0 0 0 0);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
 }
+
 .animate-sweep {
   animation: sweep 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes floatParticle {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.2; }
-  50% { transform: translateY(-30px) scale(1.2); opacity: 0.6; }
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.2;
+  }
+
+  50% {
+    transform: translateY(-30px) scale(1.2);
+    opacity: 0.6;
+  }
 }
+
 .animate-particle {
   animation: floatParticle 8s ease-in-out infinite;
 }
 
 @keyframes pulseGlow {
-  0%, 100% { filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4)); }
-  50% { filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.8)); }
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.8));
+  }
 }
+
 .animate-pulse-glow {
   animation: pulseGlow 3s ease-in-out infinite;
 }
 
 @keyframes spinSlow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
+
 .animate-spin-slow {
   animation: spinSlow 30s linear infinite;
 }
