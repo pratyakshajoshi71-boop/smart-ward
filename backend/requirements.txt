@@ -2,5 +2,7 @@ fastapi
 uvicorn[standard]
 pymongo
 python-dotenv
-requests
 pydantic
+google-generativeai
+python-socketio
+python-multipart
