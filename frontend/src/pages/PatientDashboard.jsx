@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { mockPatients } from '../data/mockStaffData';
 import PatientSidebar from '../components/patient/PatientSidebar';
 import { analyzeReport } from '../services/aiService';
+import ReactMarkdown from 'react-markdown';
 
 export default function PatientDashboard() {
   const { user } = useAuth();
@@ -57,7 +58,7 @@ export default function PatientDashboard() {
     setIsAnalyzing(true);
     setAnalysisResult(null);
     try {
-      const result = await analyzeReport(report.file_data);
+      const result = await analyzeReport(report.file_data, report.name);
       if (result.success) {
         setAnalysisResult(result.data.analysis);
       } else {
@@ -300,9 +301,8 @@ export default function PatientDashboard() {
                 </button>
               </div>
             </div>
-
             {/* Modal Content */}
-            <div className="p-6 overflow-y-auto">
+            <div className="p-6 overflow-y-auto bg-slate-50/30">
               {isAnalyzing ? (
                 <div className="flex flex-col items-center justify-center py-20 space-y-4">
                   <div className="relative w-16 h-16">
@@ -316,11 +316,9 @@ export default function PatientDashboard() {
                   </p>
                 </div>
               ) : (
-                <div className="prose prose-emerald max-w-none">
+                <div className="prose prose-slate max-w-none prose-headings:text-indigo-900 prose-strong:text-indigo-700 prose-p:text-slate-600 prose-li:text-slate-600">
                   {analysisResult ? (
-                    <div className="whitespace-pre-wrap text-slate-700 leading-relaxed">
-                      {analysisResult}
-                    </div>
+                    <ReactMarkdown>{analysisResult}</ReactMarkdown>
                   ) : (
                     <p className="text-red-500">Failed to load analysis.</p>
                   )}

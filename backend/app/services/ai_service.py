@@ -1,126 +1,105 @@
 """
 AI service — Gemini API integration for intelligent healthcare analysis.
+Uses the official google.generativeai SDK.
 """
 
-import requests
+import base64
+import google.generativeai as genai
 from app.config.settings import GEMINI_API_KEY
 
-GEMINI_API_URL = (
-    "https://generativelanguage.googleapis.com/v1beta/models/"
-    "gemini-2.5-flash:generateContent"
-)
- 
+# Configure the SDK with the API key
+# We use transport='rest' to avoid gRPC connection issues (like WinError 10060)
+genai.configure(api_key=GEMINI_API_KEY, transport='rest')
+
 
 def analyze_with_gemini(prompt: str) -> str:
     """
-    Send a prompt to the Gemini API and return the generated text.
-
+    Send a text prompt to Gemini and return the generated text.
     Falls back to a descriptive error message on failure.
     """
     if not GEMINI_API_KEY:
         return "Gemini API key is not configured. Please set GEMINI_API_KEY in .env."
 
     try:
-        headers = {"Content-Type": "application/json"}
-        params = {"key": GEMINI_API_KEY}
-        payload = {
-            "contents": [
-                {
-                    "parts": [{"text": prompt}]
-                }
-            ],
-            "generationConfig": {
-                "temperature": 0.7,
-                "maxOutputTokens": 256,
-            },
-        }
+        model = genai.GenerativeModel("gemma-4-31b-it")
+        response = model.generate_content(prompt)
+        return response.text or "Gemini returned an empty response."
 
-        response = requests.post(
-            GEMINI_API_URL,
-            headers=headers,
-            params=params,
-            json=payload,
-            timeout=15,
-        )
-
-        if response.status_code != 200:
-            return (
-                f"Gemini API returned status {response.status_code}: "
-                f"{response.text[:300]}"
-            )
-
-        data = response.json()
-        candidates = data.get("candidates", [])
-        if candidates:
-            parts = candidates[0].get("content", {}).get("parts", [])
-            if parts:
-                return parts[0].get("text", "No response text from Gemini.")
-        return "Gemini returned an empty response."
-
-    except requests.exceptions.Timeout:
-        return "Gemini API request timed out. Please try again."
-    except requests.exceptions.ConnectionError:
-        return "Unable to connect to Gemini API. Check your network connection."
     except Exception as e:
         return f"Gemini API error: {str(e)}"
 
-def analyze_pdf_with_gemini(base64_pdf: str, prompt: str) -> str:
+
+def analyze_pdf_with_gemini(base64_pdf: str, report_name: str = "Medical Report") -> str:
     """
-    Send a PDF and a prompt to the Gemini API and return the generated text.
+    Send a PDF document to Gemini for analysis using the File API.
+    This is more robust for complex PDFs.
     """
     if not GEMINI_API_KEY:
         return "Gemini API key is not configured. Please set GEMINI_API_KEY in .env."
 
+    import os
+    import tempfile
+
+    temp_file_path = None
     try:
-        headers = {"Content-Type": "application/json"}
-        params = {"key": GEMINI_API_KEY}
-        payload = {
-            "contents": [
-                {
-                    "parts": [
-                        {
-                            "inlineData": {
-                                "mimeType": "application/pdf",
-                                "data": base64_pdf
-                            }
-                        },
-                        {"text": prompt}
-                    ]
-                }
-            ],
-            "generationConfig": {
-                "temperature": 0.7,
-                "maxOutputTokens": 1024,
-            },
-        }
+        # 1. Convert the base64 string back to a PDF file
+        pdf_bytes = base64.b64decode(base64_pdf)
+        
+        # Create a temporary file to store the PDF
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+            temp_file.write(pdf_bytes)
+            temp_file_path = temp_file.name
 
-        response = requests.post(
-            GEMINI_API_URL,
-            headers=headers,
-            params=params,
-            json=payload,
-            timeout=30,
-        )
+        # Use Gemini 1.5 Pro for maximum reasoning capability on medical documents
+        uploaded_file = genai.upload_file(path=temp_file_path, display_name=report_name)
+        model = genai.GenerativeModel("gemma-4-31b-it")
 
-        if response.status_code != 200:
-            return (
-                f"Gemini API returned status {response.status_code}: "
-                f"{response.text[:300]}"
-            )
+        prompt = f"""SYSTEM: You are an elite Senior Medical ConSsultant and Diagnostic Specialist. Your task is to perform a meticulous, high-fidelity clinical analysis of the attached "{report_name}" PDF.
 
-        data = response.json()
-        candidates = data.get("candidates", [])
-        if candidates:
-            parts = candidates[0].get("content", {}).get("parts", [])
-            if parts:
-                return parts[0].get("text", "No response text from Gemini.")
-        return "Gemini returned an empty response."
+The patient is viewing this, so while the analysis must be medically rigorous, the tone should be professional, empathetic, and clear.
 
-    except requests.exceptions.Timeout:
-        return "Gemini API request timed out. Please try again."
-    except requests.exceptions.ConnectionError:
-        return "Unable to connect to Gemini API. Check your network connection."
+### INSTRUCTIONS FOR ANALYSIS:
+1. **Short Extraction**: just summarize. Extract the overview from the report.
+2. **ECG Specifics**: If this is an ECG, analyze the rhythm, P-waves, QRS duration, ST-segments, T-waves, and Axis across all provided leads (I, II, III, aVR, aVL, aVF, V1-V6). Identify if it is Sinus Rhythm and note any abnormalities.
+3. **Lab Specifics**: If this is a blood/lab report, list every out-of-range value, explain what it indicates clinically, and relate it to the other findings.
+4. **Structured Output**: Use the exact Markdown format below.
+
+---
+
+# 🩺 Clinical Analysis: {report_name}
+
+## 📝 Executive Summary
+Provide a high-level medical overview (4-5 sentences). Explain exactly what the report tells us about the patient's current cardiac or physiological state in a way that provides clarity and peace of mind while remaining clinically accurate.
+
+## 🔍 Detailed Clinical Findings
+List every key parameter found. For each, use this format:
+- **[Parameter/Metric Name]**: `[Value]` (Ref: `[Reference Range]`) -> **[STATUS: NORMAL/LOW/HIGH/ABNORMAL]**
+  - *Clinical Interpretation*: Explain exactly what this value means in the context of human physiology and this specific report.
+
+## 📉 Waveform & Pattern Observation (If Applicable)
+If the report contains ECG waveforms, imaging, or charts, describe the patterns observed (e.g., "Regular Sinus Rhythm with narrow QRS complexes," or "No ST-segment deviation across precordial leads").
+
+## 💡 Clinical Recommendations & Next Steps
+1. **Primary Action**: The most important next step (e.g., "Correlate with clinical symptoms in a follow-up with a Cardiologist").
+2. **Supportive Actions**: Lifestyle, monitoring, or additional tests suggested by these findings.
+3. **Urgent Indicators**: Specific symptoms that would require immediate ER attention despite this report.
+
+---
+**⚠️ MEDICAL DISCLAIMER**: This analysis is generated by an advanced AI for informational and educational purposes. It does NOT replace a formal diagnosis by a licensed physician. Always review this analysis with your doctor before making any medical decisions."""
+
+        # 3. Generate content using the uploaded file
+        response = model.generate_content([uploaded_file, prompt])
+
+        # Cleanup: Delete the temporary file from the local disk
+        if temp_file_path and os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+
+        return response.text or "Gemini returned an empty response."
+
     except Exception as e:
+        # Cleanup on error
+        if temp_file_path and os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
         return f"Gemini API error: {str(e)}"
 
 

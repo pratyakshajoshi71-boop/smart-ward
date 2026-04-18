@@ -35,15 +35,14 @@ def analyze_report(payload: dict):
     from app.services.ai_service import analyze_pdf_with_gemini
     
     base64_data = payload.get("base64_data")
+    report_name = payload.get("report_name", "Medical Report")
     if not base64_data:
         return format_response(False, None, "base64_data is required")
         
     # Remove data URI prefix if present (e.g. data:application/pdf;base64,)
     if "," in base64_data:
         base64_data = base64_data.split(",")[1]
-        
-    prompt = "You are a senior medical professional. Please summarize this medical report in simple, easy-to-understand terms for a patient. Provide a 'Summary' and a few 'Key Highlights' in bullet points. Keep it concise."
     
-    result = analyze_pdf_with_gemini(base64_data, prompt)
+    result = analyze_pdf_with_gemini(base64_data, report_name)
     
     return format_response(True, {"analysis": result}, "Report analysis complete")
